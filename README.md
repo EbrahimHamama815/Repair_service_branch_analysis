@@ -21,34 +21,8 @@ So, in order to perform any kind of analysis we first need to prepare the data. 
 
 ## Preparing the Data
 
-The goal here is to combine all branches sheets in one table so we can process it in Power BI.
+The goal here is to combine all branches sheets in one table so we can process it in Power BI, here is a sample of what a raw sheet looks like when loaded into a dataframe:
 
-Lets go through the first workbook, we import the whole workbook as dictionary of dataframes and specifiy the needed sheets only (because it has a total sheet).
-
-```python
-# get needed sheets only
-stores = list(pd.read_excel("تصنيف العملاء_2025-2024(1).xlsx",sheet_name=None).keys())[:-2]
-
-# load all dataframes in a dictionary
-df_dict = pd.read_excel("تصنيف العملاء_2025-2024(1).xlsx",sheet_name=stores)
-```
-
-And then we perfrom a loop on every sheet and apply the needed cleaning as explained in the code comments:
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -285,11 +259,163 @@ And then we perfrom a loop on every sheet and apply the needed cleaning as expla
     </tr>
   </tbody>
 </table>
-</div>
 
+So, lets go through the first workbook, we import the whole workbook as dictionary of dataframes and specifiy the needed sheets only (because it has a total sheet).
 
 ```python
+# get needed sheets only
+stores = list(pd.read_excel("تصنيف العملاء_2025-2024(1).xlsx",sheet_name=None).keys())[:-2]
 
-
+# load all dataframes in a dictionary
+df_dict = pd.read_excel("تصنيف العملاء_2025-2024(1).xlsx",sheet_name=stores)
 ```
 
+And then we perfrom a loop on every sheet and apply the needed cleaning as explained in the code comments:
+
+```python
+# main loop to clean each sheet
+for i in df_dict:
+    # renaming columns and dropping extra headers
+    df_dict[i].columns = ["month","2024_عدد الفواتير","drop1","2024_محقق شهريا","2025_عدد الفواتير","2025_محقق شهريا","drop2"]
+    df_dict[i] = df_dict[i].drop(df_dict[i].index[0]).reset_index(drop=True)
+    
+    # add a column for branch name and get only needed sheets
+    df_dict[i]["branch_name"] = i.strip()
+    df_dict[i] = df_dict[i][['branch_name','month', '2024_عدد الفواتير', '2024_محقق شهريا','2025_عدد الفواتير', '2025_محقق شهريا']]
+    
+    # extract first twelve rows only (months) and convert revenue columns to float
+    df_dict[i] = df_dict[i].head(12)
+    df_dict[i][list(df_dict[i])[2:]] = df_dict[i][list(df_dict[i])[2:]].astype("float").round(2)
+
+# combine all branches in one single table
+branches_monthly_recipts_earnings = pd.concat(df_dict.values(), ignore_index=True)
+
+# output
+branches_monthly_recipts_earnings.to_excel("out/branches_monthly_recipts_earnings.xlsx",sheet_name="branch_monthly income",index=False)
+```
+
+And here is what the sheet looks like after cleaning, keeping only the neded monthly data:
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>branch_name</th>
+      <th>month</th>
+      <th>2024_عدد الفواتير</th>
+      <th>2024_محقق شهريا</th>
+      <th>2025_عدد الفواتير</th>
+      <th>2025_محقق شهريا</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>branch_1</td>
+      <td>Jan</td>
+      <td>101.0</td>
+      <td>1263.87</td>
+      <td>95.0</td>
+      <td>120568.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>branch_1</td>
+      <td>Feb</td>
+      <td>77.0</td>
+      <td>1814.32</td>
+      <td>93.0</td>
+      <td>160850.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>branch_1</td>
+      <td>Mar</td>
+      <td>82.0</td>
+      <td>1593.57</td>
+      <td>78.0</td>
+      <td>93050.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>branch_1</td>
+      <td>Apr</td>
+      <td>80.0</td>
+      <td>1460.62</td>
+      <td>81.0</td>
+      <td>162250.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>branch_1</td>
+      <td>May</td>
+      <td>88.0</td>
+      <td>1338.95</td>
+      <td>64.0</td>
+      <td>97832.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>211</th>
+      <td>branch_18</td>
+      <td>Aug</td>
+      <td>33.0</td>
+      <td>1604.55</td>
+      <td>20.0</td>
+      <td>56600.0</td>
+    </tr>
+    <tr>
+      <th>212</th>
+      <td>branch_18</td>
+      <td>Sep</td>
+      <td>20.0</td>
+      <td>2115.00</td>
+      <td>24.0</td>
+      <td>39750.0</td>
+    </tr>
+    <tr>
+      <th>213</th>
+      <td>branch_18</td>
+      <td>Oct</td>
+      <td>21.0</td>
+      <td>2673.52</td>
+      <td>17.0</td>
+      <td>23535.0</td>
+    </tr>
+    <tr>
+      <th>214</th>
+      <td>branch_18</td>
+      <td>nov</td>
+      <td>18.0</td>
+      <td>1476.39</td>
+      <td>15.0</td>
+      <td>13450.0</td>
+    </tr>
+    <tr>
+      <th>215</th>
+      <td>branch_18</td>
+      <td>Dec</td>
+      <td>23.0</td>
+      <td>1577.22</td>
+      <td>16.0</td>
+      <td>28400.0</td>
+    </tr>
+  </tbody>
+</table>
+
+
+After doing the first sheet, the rest of the data is almost the same with a few tweaks. you can find the whole code in the scripts folder.
+
+After that we load the data into power query and now it is only a matter of modifying the data types in power query and creating a basic data model and a few dax measures.
+
+<img width="812" height="657" alt="image" src="https://github.com/user-attachments/assets/1818fc44-ce45-4299-8de9-374072265da4" />
+
+Finally you can find an interactive Dashboard <a herf="https://app.powerbi.com/view?r=eyJrIjoiNDNjZGFjNzYtNmQ5YS00NmI0LThkY2YtZDQ3OTM0MDE5NGI4IiwidCI6IjU5ZDRjODc4LTE4NTEtNDFkNC05ZmVmLTY5MzE2ODYyMjI5OCJ9&pageName=35e941428000ec3876e1">Here.</a>
