@@ -1,4 +1,4 @@
-# Repair_service_branch_analysis
+# Mobile_Repair_shop_revenue_analysis
 A Yearly Analysis of the revenue of a multi-branch mobile rapair shop.
 
 
@@ -422,4 +422,4 @@ After that we load the data into power query and now it is only a matter of modi
 <br>
 </p>
 
-Finally you can find an interactive Dashboard <a href="https://app.powerbi.com/view?r=eyJrIjoiNDNjZGFjNzYtNmQ5YS00NmI0LThkY2YtZDQ3OTM0MDE5NGI4IiwidCI6IjU5ZDRjODc4LTE4NTEtNDFkNC05ZmVmLTY5MzE2ODYyMjI5OCJ9" target="_blank">Here.</a>
+Finally you can find an interactive Dashboard <a href="https://app.powerbi.com/view?r=eyJrIjoiNDNjZGFjNzYtNmQ5YS00NmI0LThkY2YtZDQ3OTM0MDE5NGI4IiwidCI6IjU5ZDRjODc4LTE4NTEtNDFkNC05ZmVmLTY5MzE2ODYyMjI5OCJ9&pageName=35e941428000ec3876e1" target="_blank">Here.</a>
