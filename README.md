@@ -418,6 +418,8 @@ After that we load the data into power query and now it is only a matter of modi
 
 <img width="812" height="657" alt="image" src="https://github.com/user-attachments/assets/1818fc44-ce45-4299-8de9-374072265da4" />
 
+<p>
 <br>
+</p>
 
 Finally you can find an interactive Dashboard <a herf="https://app.powerbi.com/view?r=eyJrIjoiNDNjZGFjNzYtNmQ5YS00NmI0LThkY2YtZDQ3OTM0MDE5NGI4IiwidCI6IjU5ZDRjODc4LTE4NTEtNDFkNC05ZmVmLTY5MzE2ODYyMjI5OCJ9&pageName=35e941428000ec3876e1" target="_blank"> Here </a>.
